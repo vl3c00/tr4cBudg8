@@ -45,6 +45,7 @@ function MobileNavbar() {
               {items.map((item) => ( <NavbarItem key={item.label}
               link={item.link}
               label={item.label}
+              clickCallBack={() => setIsOpen((prev)=> !prev)}
                />
               ))}
             </div>
@@ -89,9 +90,11 @@ function DesktopNavbar() {
 function NavbarItem({
   link,
   label,
+  clickCallBack,
 }: {
   link: string;
   label: string;
+  clickCallBack? : () => void;
 }) {
   const pathname = usePathname();
   const isActive = pathname === link;
@@ -105,6 +108,9 @@ function NavbarItem({
                 "w-full justify-start text-lg text-muted-foreground hover:text-foreground",
                 isActive && "text-foreground"
                 )}
+                onClick={() => {
+                  if (clickCallBack) clickCallBack(); 
+                }}
                 >
             {label}
         </Link>
