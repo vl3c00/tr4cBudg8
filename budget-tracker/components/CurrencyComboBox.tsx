@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,14 +26,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { UserSettings } from "@prisma/client";
 import { UpdateUserCurrency } from "@/app/testWizard/_actions/userSettings";
-import { toast } from "./ui/use-toast";
+import { toast } from "sonner";
 
 export function CurrencyComboBox() {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [selectedOption, setSelectedOption] = React.useState<Currency | null>(
-    null
-  );
+  const [selectedOption, setSelectedOption] = React.useState<Currency | null>(null);
 
   const userSettings = useQuery<UserSettings>({
     queryKey: ["userSettings"],
@@ -51,20 +48,43 @@ export function CurrencyComboBox() {
 
   const mutation = useMutation({
     mutationFn: UpdateUserCurrency,
+    onSuccess: (data:UserSettings) => {
+      toast.success(`Currency updated successfully 🎉`, {
+        id: "update-currency",
+      }); 
+
+      setSelectedOption(
+        Currencies.find(c => c.value === data.currency) || null
+      );
+    },
+    onError: (e) => {
+      console.error(e);
+      toast.error("Something went wrong", {
+        id: "update-currency",
+      });
+    },
   });
 
-  const selectOption = React.useCallback((currency: Currency | null) => {
-    if (!currency) {
-      toast.error("Please select a currency");
-      return;
-    }
+  const selectOption = React.useCallback(
+    (currency: Currency | null) => {
+      if (!currency) {
+        toast.error("Please select a currency");
+        return;
+      }
 
-    toast.loading("Updating currency...", {
-      id: "update-currency",
-    });
+      const toastId = toast.loading("Updating currency...");
 
-    mutation.mutate(currency.value);
-  }, [mutation]);
+      mutation.mutate(currency.value, {
+        onSuccess: () => {
+          toast.success("Currency updated successfully!", { id: toastId });
+        },
+        onError: () => {
+          toast.error("Failed to update currency", { id: toastId });
+        },
+      });
+    },
+    [mutation]
+  );
 
   if (isDesktop) {
     return (
@@ -76,7 +96,7 @@ export function CurrencyComboBox() {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0" align="start">
-            <OptionList setOpen={setOpen} setSelectedOption={setSelectedOption} />
+            <OptionList setOpen={setOpen} setSelectedOption={selectOption} />
           </PopoverContent>
         </Popover>
       </SkeletonWrapper>
@@ -93,7 +113,7 @@ export function CurrencyComboBox() {
         </DrawerTrigger>
         <DrawerContent>
           <div className="mt-4 border-t">
-            <OptionList setOpen={setOpen} setSelectedOption={setSelectedOption} />
+            <OptionList setOpen={setOpen} setSelectedOption={selectOption} />
           </div>
         </DrawerContent>
       </Drawer>
