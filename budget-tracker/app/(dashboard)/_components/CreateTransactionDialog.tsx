@@ -1,11 +1,11 @@
-"use client"
+"use client"; 
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { CreateTransactionSchema, CreateTransactionSchemaType } from "@/schema/transaction";
-import {ReactNode} from "react";
-import { useForm } from "react-hook-form";
+import { ReactNode } from "react";
+import { FormProvider, useForm } from "react-hook-form"; 
 import { zodResolver } from "@hookform/resolvers/zod";
 
 interface Props {
@@ -14,8 +14,11 @@ interface Props {
 }
 
 import React from 'react';
+import { Input } from "@/components/ui/input";
+import CategoryPicker from "./CategoryPicker";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 
-function CreateTransactionDialog({trigger, type}: Props) {
+function CreateTransactionDialog({ trigger, type }: Props) {
     const form = useForm<CreateTransactionSchemaType>({
         resolver: zodResolver(CreateTransactionSchema),
         defaultValues: {
@@ -23,26 +26,87 @@ function CreateTransactionDialog({trigger, type}: Props) {
             date: new Date(),
         },
     });
-  return (
-<Dialog>
-    <DialogTrigger asChild>{trigger}</DialogTrigger>
-    <DialogContent>
-        <DialogHeader>
-            <DialogTitle>
-                Create a new {" "} 
-                <span className={cn(
-                    "m-1",
-                    type === "income" ? "text-emarald-500" : "text-red-500" 
-                )}
-                >
-                    {type}
-                </span>
-                transaction
-            </DialogTitle>
-        </DialogHeader>
-    </DialogContent>
-</Dialog>
-  );
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>{trigger}</DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>
+                        Create a new {" "}
+                        <span className={cn(
+                            "m-1",
+                            type === "income" ? "text-emerald-500" : "text-red-500"
+                        )}
+                        >
+                            {type}
+                        </span>
+                        transaction
+                    </DialogTitle>
+                </DialogHeader>
+
+                {/* ✅ Fix: Use FormProvider */}
+                <FormProvider {...form}>
+                    <form onSubmit={form.handleSubmit((data) => console.log(data))} className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Description</FormLabel>
+                                    <FormControl>
+                                        <Input defaultValue={""} {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Transaction description (optional)
+                                    </FormDescription>
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="amount"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Amount</FormLabel>
+                                    <FormControl>
+                                        <Input defaultValue={0} type="number" {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Transaction amount (required)
+                                    </FormDescription>
+                                </FormItem>
+                            )}
+                        />
+
+                        <div className="flex items-center justify-between gap-2">
+                            <FormField
+                                control={form.control}
+                                name="category"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Category</FormLabel>
+                                        <FormControl>
+                                            <CategoryPicker type={type} {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                            Select a category for this transaction (required)
+                                        </FormDescription>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        {/* ✅ Fix: Add Submit Button */}
+                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+                            Submit
+                        </button>
+                    </form>
+                </FormProvider>
+            </DialogContent>
+        </Dialog>
+    );
 }
 
 export default CreateTransactionDialog;
