@@ -21,9 +21,10 @@ import { toast } from "sonner";
 
 interface Props {
   type: TransactionType;
+  successCallback: (category: Category) => void;
 }
 
-function CreateCategoryDialog({ type }: Props) {
+function CreateCategoryDialog({ type, successCallback }: Props) {
   const [open, setOpen] = useState(false);
   const form = useForm<CreateCategorySchemaType>({
     resolver: zodResolver(CreateCategorySchema),
@@ -44,6 +45,8 @@ function CreateCategoryDialog({ type }: Props) {
       toast.success(`Category ${data.name} created successfully 🎉`, {
         id: "create-category",
       });
+
+      successCallback(data);
 
       await queryClient.invalidateQueries({
         queryKey: ["categories"],
@@ -100,7 +103,7 @@ function CreateCategoryDialog({ type }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input defaultValue={""} {...field} />
+                    <Input placeholder="Category" {...field} />
                   </FormControl>
                   <FormDescription>Transaction description (optional)</FormDescription>
                 </FormItem>
