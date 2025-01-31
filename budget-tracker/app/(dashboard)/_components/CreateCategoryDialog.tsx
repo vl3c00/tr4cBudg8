@@ -100,7 +100,7 @@ function CreateCategoryDialog({ type }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input defaultValue="" {...field} />
+                    <Input defaultValue={""} {...field} />
                   </FormControl>
                   <FormDescription>Transaction description (optional)</FormDescription>
                 </FormItem>
@@ -133,7 +133,7 @@ function CreateCategoryDialog({ type }: Props) {
                       <PopoverContent className="w-full">
                         <Picker
                           data={data}
-                          onEmojiSelect={(emoji: any) => field.onChange(emoji.native)}
+                          onEmojiSelect={(emoji: {native: string}) => field.onChange(emoji.native)}
                           theme="light"
                           emojiSize={24}
                           showPreview={false}
@@ -161,7 +161,7 @@ function CreateCategoryDialog({ type }: Props) {
         <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>{!isPending && "Create"}
           {isPending && <Loader2 className="animate-spin" />}
         </Button>
-      </DialogFooter>{""}
+      </DialogFooter>
       </DialogContent>
     </Dialog>
   );
