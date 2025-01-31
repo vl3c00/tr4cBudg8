@@ -98,19 +98,20 @@ function CreateCategoryDialog({ type, successCallback }: Props) {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Category" {...field} />
-                  </FormControl>
-                  <FormDescription>This is how your category will appear in the app</FormDescription>
-                </FormItem>
-              )}
-            />
+          <FormField
+  control={form.control}
+  name="name"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Name</FormLabel>
+      <FormControl>
+        <Input placeholder="Category" {...field} />
+      </FormControl>
+      <FormDescription>This is how your category will appear in the app</FormDescription>
+    </FormItem>
+  )}
+/>
+
 
             <FormField
               control={form.control}
