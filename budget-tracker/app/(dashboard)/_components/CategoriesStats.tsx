@@ -3,6 +3,7 @@
 import { GetCategoriesStatsResponseType } from "@/app/api/stats/categories/route";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DateToUTCDate, GetFormatterForCurrency } from "@/lib/helpers";
 import { TransactionType } from "@/lib/types";
@@ -92,8 +93,20 @@ return (
                   <div className="flex items-center justify-between">
                     <span className="flex items-center text-gray-400"> 
                       {item.categoryIcon} {item.category}
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        ({percentage.toFixed(0)}%)
+                      </span>
+                    </span>
+
+                    <span className="text-sm text-gray-400">
+                      {formatter.format(amount)}
                     </span>
                   </div>
+
+                  <Progress value={percentage} 
+                  indicator={
+                    type === "income" ? "bg-emerald-500": "bg-red-500"}
+                  />
                 </div>
               );
             })}
