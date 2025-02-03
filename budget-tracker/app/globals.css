@@ -5,12 +5,11 @@
 :root {
   --border: 240 5.9% 90%;
   --input: 240 5.9% 90%;
-  --ring: 240 10% 3.9;
-
+  --ring: 240 10% 3.9%;
   --radius: 0.5rem;
 }
 
-.dark{
+.dark {
   --background: 0 0% 0%;
   --foreground: 0 0% 98%;
 
@@ -32,6 +31,9 @@
   --accent: 240 3.7% 15.9%;
   --accent-foreground: 0 0% 98%;
 
+  --border: 0 0% 20%; /* Dimmer border */
+  --input: 0 0% 20%; /* Dimmer input border */
+  --ring: 0 0% 30%; /* Slightly more visible ring */
 }
 
 body {
@@ -66,6 +68,7 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -83,9 +86,9 @@ body {
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
+    --border: 0 0% 20%; /* Dimmer border */
+    --input: 0 0% 20%; /* Dimmer input border */
+    --ring: 0 0% 30%; /* Slightly more visible ring */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -102,6 +105,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
-
-
