@@ -45,7 +45,7 @@ import CategoriesStats from "./CategoriesStats";
     userSettings={userSettings}
     from={dateRange.from}
     to={dateRange.to}
-    />
+    /> 
 
     <CategoriesStats
         userSettings={userSettings}

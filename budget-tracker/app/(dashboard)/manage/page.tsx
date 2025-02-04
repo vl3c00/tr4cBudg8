@@ -5,13 +5,14 @@ import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { TransactionType } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { PlusSquare, TrendingDown, TrendingUp } from "lucide-react";
+import { PlusSquare, TrashIcon, TrendingDown, TrendingUp } from "lucide-react";
 import React from 'react'
 import CreateCategoryDialog from "../_components/CreateCategoryDialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Category } from "@prisma/client";
+import DeleteCategoryDialog from "../_components/DeleteCategoryDialog";
 
 
 function page() {
@@ -56,7 +57,7 @@ function CategoryList({type}: {type: TransactionType}) {
     length > 0;
 
     return (
-        <SkeletonWrapper isLoading={categoriesQuery.isFetching}>
+        <SkeletonWrapper isLoading={categoriesQuery.isLoading}>
             <CardHeader>
                 <CardTitle className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
@@ -124,7 +125,15 @@ function CategoryCard({category}: {category:Category}){
                 <span className="text-3xl" role="img">
                     {category.icon}
                 </span>
+                <span>{category.name}</span>
             </div>
+            <DeleteCategoryDialog category={category} trigger={            
+                <Button className="flex w-full border-separate items-center gap-2 rounded-t-none text-muted-foreground hover:bg-red-500/20" variant={"secondary"}>
+            <TrashIcon className="h-4 w-4" />
+            Remove
+            </Button>
+        }
+        />
         </div>
     );
 }
