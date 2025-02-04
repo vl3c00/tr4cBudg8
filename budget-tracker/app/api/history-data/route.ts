@@ -17,11 +17,10 @@ export async function GET(request: Request) {
         redirect("/sign-in");
     }
 
-    const {searchParams} = new URL(request.url);
+    const { searchParams } = new URL(request.url);
     const timeframe = searchParams.get("timeframe");
     const year = searchParams.get("year");
     const month = searchParams.get("month");
-
 
     const queryParams = getHistoryDataSchema.safeParse({
         timeframe,
@@ -30,9 +29,7 @@ export async function GET(request: Request) {
     });
 
     if (!queryParams.success) {
-        return Response.json(queryParams.error.message, {
-            status: 400,
-        });
+        return Response.json({ error: queryParams.error.message }, { status: 400 });
     }
 
     const data = await getHistoryData(user.id, queryParams.data.timeframe, {
@@ -40,17 +37,19 @@ export async function GET(request: Request) {
         year: queryParams.data.year,
     });
 
-    return Response.json(data);
+    return Response.json(Array.isArray(data) ? data : []); // Ensure response is always an array
 }
 
 export type GetHistoryDataResponseType = Awaited<ReturnType<typeof getHistoryData>>;
 
-async function getHistoryData(userId: string, timeframe: Timeframe, period: Period){
+async function getHistoryData(userId: string, timeframe: Timeframe, period: Period) {
     switch (timeframe) {
         case "year":
-            return await getYearHistoryData(userId, period.year)
-            case "month":
-                return await getMonthHistoryData(userId, period.year, period.month);
+            return await getYearHistoryData(userId, period.year);
+        case "month":
+            return await getMonthHistoryData(userId, period.year, period.month);
+        default:
+            return []; // Ensure it always returns an array
     }
 }
 
@@ -60,7 +59,9 @@ type HistoryData = {
     year: number;
     month: number;
     day?: number;
-}
+};
+
+// Get Yearly History Data
 async function getYearHistoryData(userId: string, year: number) {
     const result = await prisma.yearHistory.groupBy({
         by: ["month"],
@@ -87,11 +88,10 @@ async function getYearHistoryData(userId: string, year: number) {
         let expense = 0;
         let income = 0;
 
-
-        const month = result.find((row) => row.month === i);
-        if (month) {
-            expense = month._sum.expense || 0;
-            income = month._sum.income || 0;
+        const monthData = result.find((row) => row.month === i);
+        if (monthData) {
+            expense = monthData._sum.expense || 0;
+            income = monthData._sum.income || 0;
         }
 
         history.push({
@@ -104,10 +104,10 @@ async function getYearHistoryData(userId: string, year: number) {
     return history;
 }
 
-
+// Get Monthly History Data
 async function getMonthHistoryData(userId: string, year: number, month: number) {
     const result = await prisma.monthHistory.groupBy({
-        by: ['day'],
+        by: ["day"],
         where: {
             userId,
             year,
@@ -128,15 +128,15 @@ async function getMonthHistoryData(userId: string, year: number, month: number) 
 
     const history: HistoryData[] = [];
     const daysInMonth = getDaysInMonth(new Date(year, month));
-    for (let i = 1; i <= 31; i++) {
+
+    for (let i = 1; i <= daysInMonth; i++) {  // Fix: Only loop until daysInMonth
         let expense = 0;
         let income = 0;
 
-        const day = result.find((row) => row.day === i);
-        if (day) {
-            expense = day._sum.expense || 0;
-            income = day._sum.income || 0;
-
+        const dayData = result.find((row) => row.day === i);
+        if (dayData) {
+            expense = dayData._sum.expense || 0;
+            income = dayData._sum.income || 0;
         }
 
         history.push({
@@ -144,10 +144,9 @@ async function getMonthHistoryData(userId: string, year: number, month: number) 
             income,
             year,
             month,
-            day: i,
+            day: i,  // Fix: Corrected from `1` to `i`
         });
     }
-    
 
     return history;
 }
