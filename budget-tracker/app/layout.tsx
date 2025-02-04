@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Budget Tracker",
-  description: "CodeWithCarlos",
+  title: "Track For Budget",
+  description: "Ai Budget Tracking Site",
 };
 
 export default function RootLayout({

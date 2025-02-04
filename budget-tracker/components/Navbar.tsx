@@ -38,7 +38,7 @@ function MobileNavbar() {
           <SheetTrigger asChild>
           <Button variant={"ghost"} size={"icon"}>
             <Menu />
-          </Button>
+          </Button> 
           </SheetTrigger>
           <SheetContent className="w-[400px] sm:w-[540px]" side="left">
             <Logo />
