@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GetFormatterForCurrency } from "@/lib/helpers";
 import { Period, Timeframe } from "@/lib/types";
 import { UserSettings } from "@prisma/client";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import HistoryPeriodSelector from "./HistoryPeriodSelector";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import {
@@ -182,6 +182,12 @@ function TooltipRow({
     value: number;
     formatter: Intl.NumberFormat;
 }) {
+
+    const formattingFn = useCallback((value: number) => {
+        return formatter.format(value);
+    },
+    [formatter]
+);
     return (
         <div className="flex items-center gap-2">
             <div className={cn(
@@ -197,7 +203,7 @@ function TooltipRow({
                     preserveValue
                     end={value}
                     decimals={0}
-                    formattingFn={value => formatter.format(value)}
+                    formattingFn={formattingFn}
                     className="text-sm"
                     />
                 </div>
