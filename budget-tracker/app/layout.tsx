@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Track For Budget",
+  title: "Track Your Budget",
   description: "Ai Budget Tracking Site",
 };
 

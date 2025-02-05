@@ -62,7 +62,7 @@ function DeleteCategoryDialog({category, trigger}: Props) {
         </AlertDialogContent>
         </AlertDialog>;
     </div>
-  )
+  );
 }
 
-export default DeleteCategoryDialog
+export default DeleteCategoryDialog;
